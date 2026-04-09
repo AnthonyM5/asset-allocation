@@ -29,15 +29,38 @@ onMounted(fetchData)
 </script>
 
 <template>
-  <label>Investable Assets:</label>
-  <input type="number" v-model="investAmount" />
-
+  <h1 class="title">Asset Allocation Calculator</h1>
+  <section class="grid">
+    <label class="label">Investable assets</label>
+    <input type="number" v-model="investAmount" />
+    <label class="label">70% BTC allocation</label>
+    <input
+      class="input"
+      type="text"
+      :value="usdToBtc ? usdToBtc * (investAmount * 0.7) + ' BTC' : 'N/A'"
+      readonly
+    />
+    <label class="label">30% ETH allocation</label>
+    <input
+      class="input"
+      type="text"
+      :value="usdToEth ? usdToEth * (investAmount * 0.3) + ' ETH' : 'N/A'"
+      readonly
+    />
+  </section>
   <p v-if="loading">Loading exchange rate...</p>
   <p v-else-if="error">Error: {{ error }}</p>
-  <template v-else>
-    <p v-if="usdToEth">70% ETH Allocation = {{ usdToEth * (investAmount * 0.7) }} ETH</p>
-    <p v-if="usdToBtc">30% BTC Allocation = {{ usdToEth * (investAmount * 0.3) }} BTC</p>
-  </template>
 </template>
 
-<style scoped></style>
+<style scoped>
+.title {
+  text-align: center;
+}
+.grid {
+  display: grid;
+  gap: 1rem;
+  max-width: 400px;
+  margin: auto;
+  padding: 2rem;
+}
+</style>
