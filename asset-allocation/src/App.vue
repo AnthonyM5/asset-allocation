@@ -3,8 +3,8 @@ import { ref, onMounted } from 'vue'
 
 const investAmount = ref(0)
 const loading = ref(false)
-const usdToBtc = ref<string | null>(null)
-const usdToEth = ref<string | null>(null)
+const usdToBtc = ref<number | null>(null)
+const usdToEth = ref<number | null>(null)
 const error = ref<string | null>(null)
 
 async function fetchData() {
@@ -31,22 +31,24 @@ onMounted(fetchData)
 <template>
   <h1 class="title">Asset Allocation Calculator</h1>
   <section class="grid">
-    <label class="label">Investable assets</label>
-    <input type="number" v-model="investAmount" />
-    <label class="label">70% BTC allocation</label>
-    <input
-      class="input"
-      type="text"
-      :value="usdToBtc ? usdToBtc * (investAmount * 0.7) + ' BTC' : 'N/A'"
-      readonly
-    />
-    <label class="label">30% ETH allocation</label>
-    <input
-      class="input"
-      type="text"
-      :value="usdToEth ? usdToEth * (investAmount * 0.3) + ' ETH' : 'N/A'"
-      readonly
-    />
+    <label for="invest-amount" class="label">Investable assets </label>
+    <input id="invest-amount" class="invest-amount" type="number" v-model="investAmount" />
+    <div class="allocation">
+      <label for="btc-allocation" class="label">70% BTC allocation</label>
+      <output
+        id="btc-allocation"
+        class="output-allocation"
+        type="text"
+        :value="usdToBtc ? usdToBtc * (investAmount * 0.7) + ' BTC' : 'N/A'"
+      />
+      <label for="eth-allocation" class="label">30% ETH allocation</label>
+      <output
+        id="eth-allocation"
+        class="output-allocation"
+        type="text"
+        :value="usdToEth ? usdToEth * (investAmount * 0.3) + ' ETH' : 'N/A'"
+      />
+    </div>
   </section>
   <p v-if="loading">Loading exchange rate...</p>
   <p v-else-if="error">Error: {{ error }}</p>
@@ -62,5 +64,23 @@ onMounted(fetchData)
   max-width: 400px;
   margin: auto;
   padding: 2rem;
+}
+
+.output-allocation {
+  border-color: #f0f0f0;
+  padding: 0.5rem;
+  border: solid 1px;
+  border-radius: 4px;
+}
+
+.invest-amount {
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.allocation {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
 }
 </style>
