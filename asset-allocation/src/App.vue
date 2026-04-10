@@ -48,9 +48,10 @@ onMounted(fetchData)
 <template>
   <h1 class="title">Asset Allocation Calculator</h1>
   <section class="grid">
-    <div class="allocation">
-      <label for="invest-amount" class="label">Investable assets </label>
+    <form class="allocation">
+      <label for="invest-amount" class="label">Investable Assets ($) </label>
       <input
+        aria-label="Enter amount in USD"
         id="invest-amount"
         class="invest-amount"
         min="0"
@@ -58,7 +59,7 @@ onMounted(fetchData)
         type="number"
         v-model.number="investAmount"
       />
-    </div>
+    </form>
     <div class="allocation">
       <AllocationRow
         v-for="rule in allocationRules"
@@ -71,23 +72,35 @@ onMounted(fetchData)
       />
     </div>
   </section>
-  <p v-if="loading">Loading exchange rate...</p>
-  <p v-else-if="error">Error: {{ error }}</p>
+  <p v-if="loading" role="status">Loading exchange rate...</p>
+  <p v-else-if="error" role="alert">Error: {{ error }}</p>
 </template>
 
 <style scoped>
 .title {
-  text-align: center;
+  text-align: left;
 }
 .grid {
   display: flex;
-  gap: 10rem;
-  padding: 2rem;
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 100%;
 }
 
 .invest-amount {
   padding: 0.5rem;
   border-radius: 4px;
+}
+
+.invest-amount:focus-visible {
+  outline: 1px solid #007bff;
+  border-color: #007bff;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    gap: 20%;
+  }
 }
 
 .allocation {
