@@ -31,8 +31,17 @@ onMounted(fetchData)
 <template>
   <h1 class="title">Asset Allocation Calculator</h1>
   <section class="grid">
-    <label for="invest-amount" class="label">Investable assets </label>
-    <input id="invest-amount" class="invest-amount" type="number" v-model="investAmount" />
+    <div class="allocation">
+      <label for="invest-amount" class="label">Investable assets </label>
+      <input
+        id="invest-amount"
+        class="invest-amount"
+        min="0"
+        step="0.01"
+        type="number"
+        v-model="investAmount"
+      />
+    </div>
     <div class="allocation">
       <label for="btc-allocation" class="label">70% BTC allocation</label>
       <output
@@ -59,10 +68,8 @@ onMounted(fetchData)
   text-align: center;
 }
 .grid {
-  display: grid;
-  gap: 1rem;
-  max-width: 400px;
-  margin: auto;
+  display: flex;
+  gap: 10rem;
   padding: 2rem;
 }
 
@@ -82,5 +89,9 @@ onMounted(fetchData)
   display: flex;
   gap: 1rem;
   flex-direction: column;
+}
+
+.label {
+  font-weight: bold;
 }
 </style>
