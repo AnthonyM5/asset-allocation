@@ -1,11 +1,28 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import AllocationRow from './AllocationRow.vue'
+
+type AllocationRule = {
+  idPrefix: string
+  symbol: string
+  weight: number
+}
+
+const allocationRules: AllocationRule[] = [
+  { idPrefix: 'btc', symbol: 'BTC', weight: 0.7 },
+  { idPrefix: 'eth', symbol: 'ETH', weight: 0.3 },
+]
 
 const investAmount = ref(0)
 const loading = ref(false)
 const usdToBtc = ref<number | null>(null)
 const usdToEth = ref<number | null>(null)
 const error = ref<string | null>(null)
+
+const ratesBySymbol = computed<Record<string, number | null>>(() => ({
+  BTC: usdToBtc.value,
+  ETH: usdToEth.value,
+}))
 
 async function fetchData() {
   loading.value = true
@@ -39,23 +56,18 @@ onMounted(fetchData)
         min="0"
         step="0.01"
         type="number"
-        v-model="investAmount"
+        v-model.number="investAmount"
       />
     </div>
     <div class="allocation">
-      <label for="btc-allocation" class="label">70% BTC allocation</label>
-      <output
-        id="btc-allocation"
-        class="output-allocation"
-        type="text"
-        :value="usdToBtc ? usdToBtc * (investAmount * 0.7) + ' BTC' : 'N/A'"
-      />
-      <label for="eth-allocation" class="label">30% ETH allocation</label>
-      <output
-        id="eth-allocation"
-        class="output-allocation"
-        type="text"
-        :value="usdToEth ? usdToEth * (investAmount * 0.3) + ' ETH' : 'N/A'"
+      <AllocationRow
+        v-for="rule in allocationRules"
+        :key="rule.symbol"
+        :id-prefix="rule.idPrefix"
+        :symbol="rule.symbol"
+        :weight="rule.weight"
+        :invest-amount="investAmount"
+        :rate="ratesBySymbol[rule.symbol] ?? null"
       />
     </div>
   </section>
@@ -71,13 +83,6 @@ onMounted(fetchData)
   display: flex;
   gap: 10rem;
   padding: 2rem;
-}
-
-.output-allocation {
-  border-color: #f0f0f0;
-  padding: 0.5rem;
-  border: solid 1px;
-  border-radius: 4px;
 }
 
 .invest-amount {
